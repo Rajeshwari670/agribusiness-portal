@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agribusiness Portal - Connecting Farmers to Markets</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2c5530;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo::before {
+            content: "🌾";
+            font-size: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #2c5530;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(44, 85, 48, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #2c5530;
+            border: 2px solid #2c5530;
+        }
+
+        .btn-secondary:hover {
+            background: #2c5530;
+            color: white;
+        }
+
+        /* Main Content */
+        main {
+            padding: 2rem 0;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .dashboard.active {
+            display: grid;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .dashboard-card h3 {
+            color: #2c5530;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+
+        /* Market Listings */
+        .market-listings {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .market-listings h2 {
+            color: #2c5530;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .listings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .listing-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .listing-card:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .listing-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .listing-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c5530;
+        }
+
+        .listing-price {
+            background: #e8f5e8;
+            color: #2c5530;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-weight: bold;
+        }
+
+        .listing-details {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .listing-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Forms */
+        .form-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .form-container.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2c5530;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #2c5530;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            align-items: center;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 1rem;
+        }
+
+        .search-bar select {
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            background: white;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .search-bar {
+                flex-direction: column;
+            }
+
+            .listing-actions {
+                flex-direction: column;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Status indicators */
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status-available {
+            background: #e8f5e8;
+            color: #2c5530;
+        }
+
+        .status-sold {
+            background: #ffeaa7;
+            color: #d63031;
+        }
+
+        .user-info {
+            display: none;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info.active {
+            display: flex;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">AgriPortal</div>
+            <ul class="nav-links">
+                <li><a href="#home" onclick="showSection('home')">Home</a></li>
+                <li><a href="#marketplace" onclick="showSection('marketplace')">Marketplace</a></li>
+                <li><a href="#dashboard" onclick="showSection('dashboard')">Dashboard</a></li>
+                <li><a href="#add-listing" onclick="showSection('add-listing')">Sell Produce</a></li>
+            </ul>
+            <div class="auth-buttons" id="authButtons">
+                <a href="#" class="btn btn-secondary" onclick="showLogin()">Login</a>
+                <a href="#" class="btn btn-primary" onclick="showRegister()">Register</a>
+            </div>
+            <div class="user-info" id="userInfo">
+                <div class="user-avatar" id="userAvatar">F</div>
+                <span id="userName">Farmer John</span>
+                <a href="#" class="btn btn-secondary btn-small" onclick="logout()">Logout</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- Hero Section -->
+        <section id="home" class="hero fade-in">
+            <h1>Connecting Farmers to Markets</h1>
+            <p>Sell your produce directly through Seva Kendras and reach more buyers</p>
+            <div class="hero-buttons">
+                <a href="#" class="btn btn-primary" onclick="showSection('marketplace')">Browse Marketplace</a>
+                <a href="#" class="btn btn-secondary" onclick="showSection('add-listing')">Start Selling</a>
+            </div>
+        </section>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="dashboard">
+            <div class="dashboard-card fade-in">
+                <h3>📊 My Listings</h3>
+                <p>Total Active Listings: <strong>12</strong></p>
+                <p>Total Sales This Month: <strong>₹45,000</strong></p>
+                <p>Pending Orders: <strong>3</strong></p>
+                <a href="#" class="btn btn-primary btn-small" onclick="showSection('add-listing')">Add New Listing</a>
+            </div>
+            <div class="dashboard-card fade-in">
+                <h3>🏪 Seva Kendra Status</h3>
+                <p>Registered Kendra: <strong>Mangalore Central</strong></p>
+                <p>Commission Rate: <strong>5%</strong></p>
+                <p>Last Sale: <strong>2 days ago</strong></p>
+                <a href="#" class="btn btn-secondary btn-small">View Details</a>
+            </div>
+            <div class="dashboard-card fade-in">
+                <h3>💰 Earnings</h3>
+                <p>This Month: <strong>₹45,000</strong></p>
+                <p>Last Month: <strong>₹38,500</strong></p>
+                <p>Growth: <strong>+16.9%</strong></p>
+                <a href="#" class="btn btn-secondary btn-small">View Reports</a>
+            </div>
+        </section>
+
+        <!-- Marketplace Section -->
+        <section id="marketplace" class="market-listings">
+            <h2>🛒 Fresh Produce Marketplace</h2>
+            
+            <div class="search-bar">
+                <input type="text" placeholder="Search for produce..." id="searchInput">
+                <select id="categoryFilter">
+                    <option value="">All Categories</option>
+                    <option value="vegetables">Vegetables</option>
+                    <option value="fruits">Fruits</option>
+                    <option value="grains">Grains</option>
+                    <option value="spices">Spices</option>
+                </select>
+                <select id="locationFilter">
+                    <option value="">All Locations</option>
+                    <option value="mangalore">Mangalore</option>
+                    <option value="udupi">Udupi</option>
+                    <option value="karwar">Karwar</option>
+                </select>
+                <button class="btn btn-primary" onclick="filterListings()">Search</button>
+            </div>
+
+            <div class="listings-grid" id="listingsGrid">
+                <!-- Listings will be populated by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Add Listing Form -->
+        <section id="add-listing" class="form-container">
+            <h2>🌱 Add New Produce Listing</h2>
+            <form id="addListingForm">
+                <div class="form-group">
+                    <label for="productName">Product Name</label>
+                    <input type="text" id="productName" name="productName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category" required>
+                        <option value="">Select Category</option>
+                        <option value="vegetables">Vegetables</option>
+                        <option value="fruits">Fruits</option>
+                        <option value="grains">Grains</option>
+                        <option value="spices">Spices</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="quantity">Quantity (kg)</label>
+                    <input type="number" id="quantity" name="quantity" min="1" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="price">Price per kg (₹)</label>
+                    <input type="number" id="price" name="price" min="1" step="0.01" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Seva Kendra Location</label>
+                    <select id="location" name="location" required>
+                        <option value="">Select Location</option>
+                        <option value="mangalore">Mangalore Central</option>
+                        <option value="udupi">Udupi Market</option>
+                        <option value="karwar">Karwar Hub</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" rows="4" placeholder="Describe your produce quality, harvest date, organic certification, etc."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="harvestDate">Harvest Date</label>
+                    <input type="date" id="harvestDate" name="harvestDate" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">List Produce</button>
+            </form>
+        </section>
+
+        <!-- Login Form -->
+        <section id="login" class="form-container">
+            <h2>🔐 Login to Your Account</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" name="password" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Login</button>
+                <p style="margin-top: 1rem; text-align: center;">
+                    Don't have an account? <a href="#" onclick="showRegister()">Register here</a>
+                </p>
+            </form>
+        </section>
+
+        <!-- Register Form -->
+        <section id="register" class="form-container">
+            <h2>📝 Create New Account</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="registerName">Full Name</label>
+                    <input type="text" id="registerName" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerPassword">Password</label>
+                    <input type="password" id="registerPassword" name="password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="userType">Account Type</label>
+                    <select id="userType" name="userType" required>
+                        <option value="">Select Type</option>
+                        <option value="farmer">Farmer</option>
+                        <option value="buyer">Buyer</option>
+                        <option value="seva-kendra">Seva Kendra</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Register</button>
+                <p style="margin-top: 1rem; text-align: center;">
+                    Already have an account? <a href="#" onclick="showLogin()">Login here</a>
+                </p>
+            </form>
+        </section>
+    </main>
+
+    <script>
+        // Sample data for market listings
+        const marketListings = [
+            {
+                id: 1,
+                name: "Fresh Tomatoes",
+                category: "vegetables",
+                price: 25,
+                quantity: 500,
+                location: "mangalore",
+                farmer: "Rajesh Kumar",
+                description: "Organic tomatoes, harvested yesterday",
+                harvestDate: "2025-07-02",
+                status: "available"
+            },
+            {
+                id: 2,
+                name: "Basmati Rice",
+                category: "grains",
+                price: 45,
+                quantity: 1000,
+                location: "udupi",
+                farmer: "Priya Sharma",
+                description: "Premium quality basmati rice",
+                harvestDate: "2025-06-15",
+                status: "available"
+            },
+            {
+                id: 3,
+                name: "Mangoes",
+                category: "fruits",
+                price: 80,
+                quantity: 200,
+                location: "mangalore",
+                farmer: "Suresh Nayak",
+                description: "Sweet Alphonso mangoes",
+                harvestDate: "2025-07-01",
+                status: "available"
+            },
+            {
+                id: 4,
+                name: "Organic Spinach",
+                category: "vegetables",
+                price: 30,
+                quantity: 50,
+                location: "karwar",
+                farmer: "Anita Rao",
+                description: "Fresh organic spinach, pesticide-free",
+                harvestDate: "2025-07-03",
+                status: "available"
+            },
+            {
+                id: 5,
+                name: "Cardamom",
+                category: "spices",
+                price: 1200,
+                quantity: 10,
+                location: "udupi",
+                farmer: "Mohammed Ali",
+                description: "Premium green cardamom",
+                harvestDate: "2025-06-20",
+                status: "sold"
+            }
+        ];
+
+        // Current user state
+        let currentUser = null;
+        let currentSection = 'home';
+
+        // Initialize the application
+        function init() {
+            showSection('home');
+            displayListings(marketListings);
+        }
+
+        // Show different sections
+        function showSection(section) {
+            // Hide all sections
+            const sections = ['home', 'dashboard', 'marketplace', 'add-listing', 'login', 'register'];
+            sections.forEach(s => {
+                const element = document.getElementById(s);
+                if (element) {
+                    element.style.display = 'none';
+                    if (element.classList.contains('dashboard')) {
+                        element.classList.remove('active');
+                    }
+                    if (element.classList.contains('form-container')) {
+                        element.classList.remove('active');
+                    }
+                }
+            });
+
+            // Show selected section
+            const selectedSection = document.getElementById(section);
+            if (selectedSection) {
+                if (section === 'home') {
+                    selectedSection.style.display = 'block';
+                } else if (section === 'dashboard') {
+                    selectedSection.classList.add('active');
+                } else if (section === 'marketplace') {
+                    selectedSection.style.display = 'block';
+                } else {
+                    selectedSection.classList.add('active');
+                }
+            }
+
+            currentSection = section;
+
+            // Check if user needs to be logged in
+            if (['dashboard', 'add-listing'].includes(section) && !currentUser) {
+                showLogin();
+                return;
+            }
+        }
+
+        // Show login form
+        function showLogin() {
+            showSection('login');
+        }
+
+        // Show register form
+        function showRegister() {
+            showSection('register');
+        }
+
+        // Display market listings
+        function displayListings(listings) {
+            const grid = document.getElementById('listingsGrid');
+            if (!grid) return;
+
+            grid.innerHTML = listings.map(listing => `
+                <div class="listing-card fade-in">
+                    <div class="listing-header">
+                        <div class="listing-title">${listing.name}</div>
+                        <div class="listing-price">₹${listing.price}/kg</div>
+                    </div>
+                    <div class="listing-details">
+                        <p><strong>Farmer:</strong> ${listing.farmer}</p>
+                        <p><strong>Quantity:</strong> ${listing.quantity} kg</p>
+                        <p><strong>Location:</strong> ${listing.location}</p>
+                        <p><strong>Harvest Date:</strong> ${listing.harvestDate}</p>
+                        <p><strong>Description:</strong> ${listing.description}</p>
+                        <span class="status-badge ${listing.status === 'available' ? 'status-available' : 'status-sold'}">
+                            ${listing.status === 'available' ? 'Available' : 'Sold'}
+                        </span>
+                    </div>
+                    <div class="listing-actions">
+                        ${listing.status === 'available' ? `
+                            <button class="btn btn-primary btn-small" onclick="buyProduce(${listing.id})">Buy Now</button>
+                            <button class="btn btn-secondary btn-small" onclick="contactFarmer(${listing.id})">Contact Farmer</button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter listings
+        function filterListings() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const locationFilter = document.getElementById('locationFilter').value;
+
+            const filteredListings = marketListings.filter(listing => {
+                const matchesSearch = listing.name.toLowerCase().includes(searchTerm) ||
+                                    listing.description.toLowerCase().includes(searchTerm);
+                const matchesCategory = !categoryFilter || listing.category === categoryFilter;
+                const matchesLocation = !locationFilter || listing.location === locationFilter;
+
+                return matchesSearch && matchesCategory && matchesLocation;
+            });
+
+            displayListings(filteredListings);
+        }
+
+        // Buy produce function
+        function buyProduce(id) {
+            if (!currentUser) {
+                alert('Please login to buy produce');
+                showLogin();
+                return;
+            }
+            alert(`Purchase initiated for listing ID: ${id}. This would redirect to payment gateway.`);
+        }
+
+        // Contact farmer function
+        function contactFarmer(id) {
+            if (!currentUser) {
+                alert('Please login to contact farmers');
+                showLogin();
+                return;
+            }
+            const listing = marketListings.find(l => l.id === id);
+            alert(`Contact details for ${listing.farmer}: This would show phone/email in real implementation.`);
+        }
+
+        // Handle login
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            // Simulate login (in real app, this would be an API call)
+            if (email && password) {
+                currentUser = {
+                    name: 'Farmer John',
+                    email: email,
+                    type: 'farmer'
+                };
+                
+                // Update UI
+                document.getElementById('authButtons').style.display = 'none';
+                document.getElementById('userInfo').classList.add('active');
+                document.getElementById('userName').textContent = currentUser.name;
+                document.getElementById('userAvatar').textContent = currentUser.name.charAt(0);
+
+                showSection('dashboard');
+                alert('Login successful!');
+            }
+        }
+
+        // Handle registration
+        function handleRegister(event) {
+            event.preventDefault();
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const userType = document.getElementById('userType').value;
+
+            // Simulate registration (in real app, this would be an API call)
+            if (name && email && password && userType) {
+                currentUser = {
+                    name: name,
+                    email: email,
+                    type: userType
+                };
+
+                // Update UI
+                document.getElementById('authButtons').style.display = 'none';
+                document.getElementById('userInfo').classList.add('active');
+                document.getElementById('userName').textContent = currentUser.name;
+                document.getElementById('userAvatar').textContent = currentUser.name.charAt(0);
+
+                showSection('dashboard');
+                alert('Registration successful!');
+            }
+        }
+
+        // Handle adding new listing
+        function handleAddListing(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const listing = {
+                id: marketListings.length + 1,
+                name: formData.get('productName'),
+                category: formData.get('category'),
+                price: parseFloat(formData.get('price')),
+                quantity: parseInt(formData.get('quantity')),
+                location: formData.get('location'),
+                farmer: currentUser.name,
+                description: formData.get('description'),
+                harvestDate: formData.get('harvestDate'),
+                status: 'available'
+            };
+
+            marketListings.unshift(listing);
+            displayListings(marketListings);
+            event.target.reset();
+            showSection('marketplace');
+            alert('Listing added successfully!');
+        }
+
+        // Logout function
+        function logout() {
+            currentUser = null;
+            document.getElementById('authButtons').style.display = 'flex';
+            document.getElementById('userInfo').classList.remove('active');
+            showSection('home');
+        }
+
+        // Event listeners
+        document.getElementById('loginForm').addEventListener('submit', handleLogin);
+        document.getElementById('registerForm').addEventListener('submit', handleRegister);
+        document.getElementById('addListingForm').addEventListener('submit', handleAddListing);
+
+        // Initialize search functionality
+        document.getElementById('searchInput').addEventListener('input', filterListings);
+
+        // Initialize the application when page loads
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
